@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import FocusTrap from 'focus-trap-react';
-import React from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 
 import { BodyPortal } from '../BodyPortal';
 import styles from './styles.module.scss';
@@ -24,6 +24,17 @@ export type OverlayProps = {
   isOpen?: boolean;
 };
 
+// TODO: replace with react-use
+function usePrevious<T>(state: T): T | undefined {
+  const ref = useRef<T>();
+
+  useEffect(() => {
+    ref.current = state;
+  });
+
+  return ref.current;
+}
+
 export const Overlay: React.FC<OverlayProps> = ({
   className,
   children,
@@ -32,7 +43,29 @@ export const Overlay: React.FC<OverlayProps> = ({
   onRequestClose,
   isOpen,
 }) => {
-  if (!isOpen) return null;
+  const [trapActive, setTrapActive] = useState(isOpen);
+  const wasOpen = usePrevious(isOpen);
+
+  const requestCloseCallback = () => {
+    setTrapActive(false);
+  };
+
+  useEffect(() => {
+    // FocusTrap callbacks triggered deactivate
+    if (wasOpen && isOpen && !trapActive) {
+      onRequestClose();
+    }
+    // Parent component set isOpen to true
+    if (!wasOpen && isOpen && !trapActive) {
+      setTrapActive(true);
+    }
+    // Parent component set isOpen to false
+    if (wasOpen && !isOpen && trapActive) {
+      setTrapActive(false);
+    }
+  }, [isOpen, onRequestClose, trapActive, wasOpen]);
+
+  if (!trapActive) return null;
 
   return (
     <BodyPortal>
@@ -41,7 +74,7 @@ export const Overlay: React.FC<OverlayProps> = ({
           focusTrapOptions={{
             clickOutsideDeactivates: clickOutsideCloses,
             escapeDeactivates: escapeCloses,
-            onDeactivate: onRequestClose,
+            onDeactivate: requestCloseCallback,
           }}
         >
           {children}
