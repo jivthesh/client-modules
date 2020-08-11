@@ -220,6 +220,22 @@ export const breakpoints = {
   xl: '1440px',
 };
 
+export const fontFamilies = {
+  base: `"Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Roboto", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+        sans-serif`,
+
+  headings: `"Regular Patch", "Regular Bold", "Nunito Sans",
+        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Ubuntu", "Cantarell",
+        "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`,
+
+  monospace: `Monaco, Menlo, "Ubuntu Mono", "Droid Sans Mono", Consolas,
+        monospace`,
+
+  system: `-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Ubuntu",
+        "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`,
+};
+
 export default {
   colors,
   brandColors,
@@ -231,4 +247,5 @@ export default {
   breakpoints,
   legacyBreakpoints,
   platformColors,
+  fontFamilies,
 };
